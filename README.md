@@ -25,4 +25,49 @@ In large areas the azure devops extension just queries the azure devops rest api
 
 ## Get the latest version info
 
-The cli has a build in autoupdate feature for this tool. The cli queries an rest api and gets back the url of Artifacttool release.
+The cli has a build in autoupdate feature for this tool. The cli queries an rest api and gets back the version number and url of the last artifacttool release.
+
+The request has the following parameters:
+- osName
+- arch
+- distroName
+- distroVersion
+- version
+
+Powershell Example:
+``` Powershell
+$result = Invoke-WebRequest -Headers $headers -Method Get -Uri "https://vsblob.dev.azure.com/<Your Organisation>/_apis/clienttools/ArtifactTool/release?osName=Windows&arch=x86_64"
+```
+
+Reponse:
+``` json
+{
+    "name":"ArtifactTool",
+    "rid":"win10-x64",
+    "version":"0.2.195",
+    "uri":"https://08wvsblobprodsu6weus73.vsblob.vsassets.io/artifacttool/artifacttool-win10-x64-Release_0.2.195.zip?..."
+}
+```
+
+Powershell Example2:
+``` Powershell
+$result = Invoke-WebRequest -Headers $headers -Method Get -Uri "https://vsblob.dev.azure.com/<Your Organisation>/_apis/clienttools/ArtifactTool/release?osName=Linux&arch=x86_64&distroName=Debian&distroVersion=10
+```
+
+Response:
+``` json
+{
+    "name":"ArtifactTool",
+    "rid":"linux-x64",
+    "version":"0.2.195",
+    "uri":"https://08wvsblobprodsu6weus73.vsblob.vsassets.io/artifacttool/artifacttool-linux-x64-Release_0.2.195.zip?..."}
+```
+
+## Using the Artifacttool
+
+The artifact can be used similar to azure cli with slightly different syntax. Here we can pass in a PAT as well with the difference we need to tell the tool the name of the environment variable containing the PAT.
+
+Example
+``` PowerShell
+.\artifacttool universal download --service <URL to your devops organisation> --patvar AZURE_DEVOPS_EXT_PAT --feed <feed name> --package-name <package name> --package-version '*' --path D:\Temp\Artifact\
+```
