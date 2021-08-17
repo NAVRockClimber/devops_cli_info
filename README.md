@@ -23,7 +23,7 @@ az artifacts universal download --organization <URL to your devops organisation>
 
 In large areas the azure devops extension just queries the azure devops rest api. But for downloading and uploading artifact it uses a tool called the Artifacttool. Well that not too surprising as I already saw pipelines downloading this tool if you use one of the upload or download steps.
 
-## Get the latest version info
+### Get the latest version info
 
 The cli has a build in autoupdate feature for this tool. The cli queries an rest api and gets back the version number and url of the last artifacttool release.
 
@@ -63,7 +63,7 @@ Response:
     "uri":"https://08wvsblobprodsu6weus73.vsblob.vsassets.io/artifacttool/artifacttool-linux-x64-Release_0.2.195.zip?..."}
 ```
 
-## Using the Artifacttool
+### Using the Artifacttool
 
 The artifact can be used similar to azure cli with slightly different syntax. Here we can pass in a PAT as well with the difference we need to tell the tool the name of the environment variable containing the PAT.
 
