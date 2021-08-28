@@ -1,0 +1,45 @@
+@Organization=
+@feed=
+@PAT=
+@package=
+@version=
+
+GET https://pkgs.dev.azure.com/{{Organization}}/_packaging/{{feed}}/upack/packages/{{package}}/versions/{{version}}?intend=download
+Authorization: Basic PAT:{{PAT}}
+
+# take the manifestid and set variable below
+###
+@ManifestId=
+
+GET https://dev.azure.com/{{Organization}}/_apis/connectionData?connectOptions=1
+Authorization: Basic PAT:{{PAT}}
+
+# Find the porperty locationServiceData.accessMappings[virtualDirectory] and set variable below
+###
+@VirtualDirectory=
+
+POST https://{{Organization}}.vsblob.visualstudio.com/{{VirtualDirectory}}/_apis/dedup/urls?allowEdge=true"
+Content-Type: application/json; api-version=1.0
+Accept: application/json; api-version=1.0
+Authorization: Basic PAT:{{PAT}}
+
+["{{ManifestId}}"]
+
+# Take the URL and set the variable ManifestUri
+### 
+@ManifestUri=
+GET {{ManifestUri}}
+
+# take the blobid and set the variable below
+###
+
+@BlobId=
+
+POST https://{{Organization}}.vsblob.visualstudio.com/{{VirtualDirectory}}/_apis/dedup/urls?allowEdge=true"
+Content-Type: application/json; api-version=1.0
+Accept: application/json; api-version=1.0
+Authorization: Basic PAT:{{PAT}}
+
+["{{BlobId}}"]
+
+# Invoke the url this is the download

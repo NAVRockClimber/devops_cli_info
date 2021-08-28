@@ -71,3 +71,80 @@ Example
 ``` PowerShell
 .\artifacttool universal download --service <URL to your devops organisation> --patvar AZURE_DEVOPS_EXT_PAT --feed <feed name> --package-name <package name> --package-version '*' --path D:\Temp\Artifact\
 ```
+
+# Artifacttool
+
+## Get Virtual Directory
+
+```
+GET https://dev.azure.com/{Organization}/_apis/connectionData?connectOptions=1&lastChangeId=183750697&lastChangeId64=183750697
+```
+
+Response:
+```JSON
+    ...
+    "locationServiceData": {
+        "serviceOwner": "00000000-0000-0000-0000-000000000000", // removed
+        "accessMappings": [
+            {
+                "displayName": "Host Guid Access Mapping",
+                "moniker": "HostGuidAccessMapping",
+                "accessPoint": "https://tfsprodweu3.visualstudio.com/",
+                "serviceOwner": "00000000-0000-0000-0000-000000000000",
+                "virtualDirectory": "<GUID / Virtual Directory>"
+            },
+            {}
+        ]}
+    ...
+```
+
+## Get Manifest ID
+
+```
+GET https://pkgsprodsu3weu.pkgs.visualstudio.com/{{VirtualDirectory}}/_packaging/{{feed}}/upack/packages/{{package}}/versions/{{version}}?intent=Download
+```
+might be able to be substituated by: https://pkgs.dev.azure.com/{{Organization}}/_packaging/{{feed}}/upack/packages/{{package}}/versions
+https://github.com/Azure/azure-devops-cli-extension/issues/567
+
+Response:
+```JSON
+{
+    "version": "<Version>",
+    "superRootId": "<RootID>", 
+    "manifestId": "<manifestID>"
+}
+```
+
+## Get Manifest URl
+
+```
+POST https://vsblobprodsu6weu.vsblob.visualstudio.com/{{VirtualDirectory}}/_apis/dedup/urls?allowEdge=true 
+
+["<manifestID>"]
+```
+can be supplemented by: "https://{{Organization}}.vsblob.visualstudio.com/{{VirtualDirectory}}/_apis/dedup/urls?allowEdge=true&api-version=1.0" -Body '["<manifestID>"]'
+
+Docu: https://docs.microsoft.com/de-de/azure/devops/pipelines/agents/v2-windows?view=azure-devops#for-organizations-using-the-devazurecom-domain
+
+Response:
+```JSON
+{
+    "<manifestID>": "<Storage Link Valid 1 Day>"
+}
+```
+
+## Get Package URl
+
+```
+POST https://vsblobprodsu6weu.vsblob.visualstudio.com/{{VirtualDirectory}}/_apis/dedup/urls?allowEdge=true 
+
+["<BlobId>"]
+```
+can be supplemented by: "https://{{Organization}}.vsblob.visualstudio.com/{{VirtualDirectory}}/_apis/dedup/urls?allowEdge=true&api-version=1.0" -Body '["<BlobId>"]'
+
+Response:
+```JSON
+{
+    "<BlobId>": "<Storage Link Valid 1 Day>"
+}
+```
